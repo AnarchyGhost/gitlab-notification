@@ -1,0 +1,61 @@
+{
+  "plugins": [
+    "config/gitlab-notification-plugin-example-0.0.1.jar"
+  ],
+  "users": [
+    {
+      "gitlab": {
+        "id": 8964,
+        "username": "AnarchyGhost"
+      },
+      "discord": {
+        "id": "<@70797016>"
+      },
+      "additional": {}
+    }
+  ],
+  "labels": [
+    {
+      "gitlab": {
+        "name": "Backend"
+      },
+      "discord": {
+        "ids": [
+          "<@&1122659551>"
+        ]
+      },
+      "additional": {}
+    }
+  ],
+  "senders": [
+    {
+      "id": "discord",
+      "custom": {
+        "clazz": "com.anarchyghost.TestSender"
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "MERGE_REQUEST_EVENT",
+      "projectIds": [
+        "35336022"
+      ],
+      "senders": [
+        {
+          "id": "discord",
+          "message": {
+            "custom": {
+              "clazz": "com.anarchyghost.TestGenerator"
+            }
+          }
+        }
+      ],
+      "condition": {
+        "custom": {
+          "clazz": "com.anarchyghost.TestConditionEvaluator"
+        }
+      }
+    }
+  ]
+}
