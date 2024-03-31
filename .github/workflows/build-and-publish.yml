@@ -33,4 +33,4 @@ jobs:
           path: /build/libs
 
       - name: Publish to Dockerhub
-        run: ./gradlew -PdockerHubUsername=${{ secrets.DOCKER_HUB_USERNAME }} -PdockerHubPassword=${{ secrets.DOCKER_HUB_PASSWORD }} publishImage
+        run: ./gradlew -PgithubPackagesUsername=${{ secrets.PACKAGES_USERNAME }} -PgithubPackagesToken=${{ secrets.PACKAGES_TOKEN }} -PdockerHubUsername=${{ secrets.DOCKER_HUB_USERNAME }} -PdockerHubPassword=${{ secrets.DOCKER_HUB_PASSWORD }} publishImage
