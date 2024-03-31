@@ -135,6 +135,7 @@ Custom classes example: https://github.com/AnarchyGhost/gitlab-notification-plug
 4. Custom templates language
 5. Better class loader
 6. Fix bug that custom workers can not work with built-in message types
+7. Unit tests
 
 ----
 
