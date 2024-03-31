@@ -18,8 +18,6 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
-val githubPackagesUsername: String? by project
-val githubPackagesToken: String? by project
 val dockerHubUsername: String? by project
 val dockerHubPassword: String? by project
 
@@ -27,10 +25,6 @@ repositories {
     mavenCentral()
     maven {
         url = uri("https://maven.pkg.github.com/anarchyghost/gitlab-notification-core")
-        credentials {
-            username = githubPackagesUsername
-            password = githubPackagesToken
-        }
     }
 }
 
