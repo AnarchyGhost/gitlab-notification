@@ -39,7 +39,7 @@ Result folder: build/libs
 #### OR
 Using docker
 ```
-docker run -d -p8080:8080 -v ./config:/config -e CONFIG_PATH=exampleConfig/config.json anarchyghost/gitlab-notification:0.0.1 
+docker run -d -p8080:8080 -v ./config:/config -e CONFIG_PATH=exampleConfig/config.json anarchyghost/gitlab-notification:0.0.2
 ```
 
 ## Usage
