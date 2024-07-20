@@ -11,6 +11,7 @@ fun evaluate(expression: String, params: Map<String, Any>): Any? {
     params.forEach { param ->
         engine.put(param.key, param.value)
     }
+    println("Evaluating $expression")
     return engine.eval(expression)
 }
 
