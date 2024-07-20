@@ -144,7 +144,7 @@ class ConfigurationParser(
                             )
                         },
                             title = embed.title?.toByEventStringEvaluator() ?: { null },
-                            url = embed.title?.toByEventStringEvaluator() ?: { null },
+                            url = embed.url?.toByEventStringEvaluator() ?: { null },
                             description = embed.description?.toByEventStringEvaluator() ?: { null })
                     },
                 )

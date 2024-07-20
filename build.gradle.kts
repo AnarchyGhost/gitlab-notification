@@ -66,6 +66,8 @@ dependencies {
 
     runtimeOnly("org.jetbrains.kotlin:kotlin-scripting-jsr223:$kotlin_version")
 
+    implementation(kotlin("reflect"))
+
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
