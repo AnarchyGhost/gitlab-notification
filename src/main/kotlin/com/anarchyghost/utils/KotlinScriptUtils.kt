@@ -18,7 +18,7 @@ fun evaluate(expression: String, params: Map<String, Any>): Any? {
 private fun process(text: String): String {
     val pattern = Regex("#\\{([^{}]+)}")
     return pattern.replace(text) {
-        "dataEvaluator.getTextValue(data, \"${it.groupValues[1]}\")"
+        "dataEvaluator.evaluate(data, \"${it.groupValues[1]}\")"
     }
 }
 
