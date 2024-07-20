@@ -32,10 +32,14 @@ class DefaultEventListener(
         if (event.type != this.eventType) return
         if (type == ListenerType.PROJECT && event.projectId !in ids) return
         if (type == ListenerType.GROUP && event.groupId !in ids) return
-        if (!condition.evaluate(event)) return
+        val evaluationResult = condition.evaluate(event)
+        println("Evaluation result $evaluationResult")
+        if (!evaluationResult) return
         senders.forEach { senderAndGenerator ->
             try {
-                senderAndGenerator.sender.send(senderAndGenerator.generator.generate(event))
+                val generated = senderAndGenerator.generator.generate(event)
+                println("Send $generated")
+                senderAndGenerator.sender.send(generated)
             } catch (e: Exception) {
                 //TODO good message
                 logger.error("Failed to send message")

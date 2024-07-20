@@ -19,10 +19,12 @@ import com.anarchyghost.processing.event.preprocessor.implementation.DefaultPrep
 import com.anarchyghost.processing.message.generator.MessageGenerator
 import com.anarchyghost.processing.message.generator.implementation.DiscordMessageGenerator
 import com.anarchyghost.processing.message.generator.implementation.EmbedGenerationRule
+import com.anarchyghost.processing.message.generator.implementation.FieldsMessageGenerator
 import com.anarchyghost.processing.message.generator.implementation.TextMessageGenerator
 import com.anarchyghost.processing.message.sender.MessageSender
 import com.anarchyghost.processing.message.sender.implementation.DiscordMessageSender
 import com.anarchyghost.utils.JarClassLoader
+import com.anarchyghost.utils.toByEventEvaluator
 import com.anarchyghost.utils.toByEventStringEvaluator
 import io.ktor.client.*
 
@@ -130,7 +132,7 @@ class ConfigurationParser(
     }
 
     private fun EventsSendersMessageConfiguration.parse(classLoader: JarClassLoader): MessageGenerator {
-        require((this.discord != null) xor (this.text != null) xor (this.custom != null)) { "Only one of [discord, custom] allowed in [sender]" }
+        require((this.discord != null) xor (this.text != null) xor (this.custom != null) xor (this.fields != null)) { "Only one of [discord, custom, text, fields] allowed in [message]" }
         return when {
             this.discord != null -> {
                 DiscordMessageGenerator(
@@ -144,9 +146,15 @@ class ConfigurationParser(
                             )
                         },
                             title = embed.title?.toByEventStringEvaluator() ?: { null },
-                            url = embed.title?.toByEventStringEvaluator() ?: { null },
+                            url = embed.url?.toByEventStringEvaluator() ?: { null },
                             description = embed.description?.toByEventStringEvaluator() ?: { null })
                     },
+                )
+            }
+
+            this.fields != null -> {
+                FieldsMessageGenerator(
+                    generationRules = this.fields!!.mapValues { it.value.toByEventStringEvaluator() }
                 )
             }
 
@@ -180,7 +188,7 @@ class ConfigurationParser(
 
             this.and != null -> {
                 require(this.and!!.size > 1) { "Need at least 2 conditions for [and] evaluator" }
-                OrConditionEvaluator(conditions = this.and!!.map { and -> and.parse(classLoader) })
+                AndConditionEvaluator(conditions = this.and!!.map { and -> and.parse(classLoader) })
             }
 
             this.custom != null -> {
