@@ -39,7 +39,7 @@ Result folder: build/libs
 #### OR
 Using docker
 ```
-docker run -d -p8080:8080 -v ./config:/config -e CONFIG_PATH=exampleConfig/config.json anarchyghost/gitlab-notification:0.0.3
+docker run -d -p8080:8080 -v ./config:/config -e CONFIG_PATH=exampleConfig/config.json anarchyghost/gitlab-notification:0.0.4
 ```
 
 ## Usage
@@ -88,6 +88,7 @@ Example: /exampleConfig/config.json
           * title - kotlin string template (optional)
           * description - kotlin string template (optional)
           * url - kotlin string template (optional)
+      * fields - message, that contains map of string attributes
       * custom - custom message generator
         * clazz - full class name (required)
   * condition - condition (should contain one of text, labels, or, and, not, custom)
@@ -107,6 +108,7 @@ Kotlin functions can use object "data" with fields:
     * All fields are nullable
     * ids have type long
     * dates have type Instant
+    * must be casted to event class
 * projectId - projectId (string, nullable)
 * groupId - groupId (string, nullable)
 * labels - labels (set of string, for issue/merge request events)
@@ -118,6 +120,15 @@ Functions:
 * getUserByUsername(username: String): UsersConfigurationJson
 * getLabelByName(name: String): LabelsConfigurationJson
 * getLabelsByName(labels: Set<String>): List<LabelsConfigurationJson>
+
+Also can be used simple data access in kotlin functions, using `#{fields}`, that returns requested Object, so for string template you must use `${}` too.
+Examples:
+
+`#{event.objectAttributes.url}`
+
+`#{event.labels.0.id}`
+
+`"text": "[${#{event.project.name}}/${#{event.objectAttributes.title}}](${#{event.objectAttributes.url}}) from ${data.getUserById(#{event.objectAttributes.authorId} as Long).additional[\"name\"]}"`
 
 To add custom condition evaluator, message generator, message sender:
 1. Implement interface from com.anarchyghost:gitlab-notification-core library
