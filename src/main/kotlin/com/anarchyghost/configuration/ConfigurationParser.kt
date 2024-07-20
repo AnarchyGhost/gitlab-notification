@@ -132,7 +132,7 @@ class ConfigurationParser(
     }
 
     private fun EventsSendersMessageConfiguration.parse(classLoader: JarClassLoader): MessageGenerator {
-        require((this.discord != null) xor (this.text != null) xor (this.custom != null)) { "Only one of [discord, custom] allowed in [sender]" }
+        require((this.discord != null) xor (this.text != null) xor (this.custom != null) xor (this.fields != null)) { "Only one of [discord, custom, text, fields] allowed in [message]" }
         return when {
             this.discord != null -> {
                 DiscordMessageGenerator(
