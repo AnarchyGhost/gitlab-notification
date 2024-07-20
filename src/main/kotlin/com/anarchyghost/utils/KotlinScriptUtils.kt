@@ -46,7 +46,7 @@ object DataAccessEvaluator {
 
 fun <T> String.toByEventEvaluator(): (GitlabEvent<*>) -> T = { event ->
     evaluate(
-        this,
+        process(this),
         mapOf("data" to event, "dataEvaluator" to DataAccessEvaluator)
     ) as T
 }

@@ -32,7 +32,8 @@ class DefaultEventListener(
         if (event.type != this.eventType) return
         if (type == ListenerType.PROJECT && event.projectId !in ids) return
         if (type == ListenerType.GROUP && event.groupId !in ids) return
-        if (!condition.evaluate(event)) return
+        val evaluationResult = condition.evaluate(event)
+        if (!evaluationResult) return
         senders.forEach { senderAndGenerator ->
             try {
                 senderAndGenerator.sender.send(senderAndGenerator.generator.generate(event))
