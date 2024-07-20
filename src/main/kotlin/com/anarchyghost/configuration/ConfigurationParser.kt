@@ -188,7 +188,7 @@ class ConfigurationParser(
 
             this.and != null -> {
                 require(this.and!!.size > 1) { "Need at least 2 conditions for [and] evaluator" }
-                OrConditionEvaluator(conditions = this.and!!.map { and -> and.parse(classLoader) })
+                AndConditionEvaluator(conditions = this.and!!.map { and -> and.parse(classLoader) })
             }
 
             this.custom != null -> {
