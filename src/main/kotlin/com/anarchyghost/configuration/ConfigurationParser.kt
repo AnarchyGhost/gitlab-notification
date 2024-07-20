@@ -19,10 +19,12 @@ import com.anarchyghost.processing.event.preprocessor.implementation.DefaultPrep
 import com.anarchyghost.processing.message.generator.MessageGenerator
 import com.anarchyghost.processing.message.generator.implementation.DiscordMessageGenerator
 import com.anarchyghost.processing.message.generator.implementation.EmbedGenerationRule
+import com.anarchyghost.processing.message.generator.implementation.FieldsMessageGenerator
 import com.anarchyghost.processing.message.generator.implementation.TextMessageGenerator
 import com.anarchyghost.processing.message.sender.MessageSender
 import com.anarchyghost.processing.message.sender.implementation.DiscordMessageSender
 import com.anarchyghost.utils.JarClassLoader
+import com.anarchyghost.utils.toByEventEvaluator
 import com.anarchyghost.utils.toByEventStringEvaluator
 import io.ktor.client.*
 
@@ -147,6 +149,12 @@ class ConfigurationParser(
                             url = embed.url?.toByEventStringEvaluator() ?: { null },
                             description = embed.description?.toByEventStringEvaluator() ?: { null })
                     },
+                )
+            }
+
+            this.fields != null -> {
+                FieldsMessageGenerator(
+                    generationRules = this.fields!!.mapValues { it.value.toByEventStringEvaluator() }
                 )
             }
 

@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.anarchyghost"
-version = "0.0.3"
+version = "0.0.4"
 
 application {
     mainClass.set("com.anarchyghost.ApplicationKt")
@@ -37,7 +37,7 @@ repositories {
 ktor {
     docker {
         jreVersion.set(JavaVersion.VERSION_17)
-        imageTag.set("0.0.3")
+        imageTag.set("0.0.4")
         externalRegistry.set(
             io.ktor.plugin.features.DockerImageRegistry.dockerHub(
                 appName = provider { "gitlab-notification" },
@@ -62,7 +62,7 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
 
-    implementation("com.anarchyghost:gitlab-notification-core:0.0.3")
+    implementation("com.anarchyghost:gitlab-notification-core:0.0.4")
 
     runtimeOnly("org.jetbrains.kotlin:kotlin-scripting-jsr223:$kotlin_version")
 
