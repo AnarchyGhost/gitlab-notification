@@ -23,20 +23,32 @@ private fun process(text: String): String {
 
 object DataAccessEvaluator {
     fun evaluate(event: GitlabEvent<*>, value: String): Any {
+        var actualValue = value
+        val processInnersPattern = Regex("\\[([^\\[\\]]+)]")
+        while (processInnersPattern.find(actualValue) != null) {
+            actualValue = processInnersPattern.replace(actualValue) {
+                evaluate(event, it.groupValues[1]).toString()
+            }
+        }
         val splitted = value.split(".")
         var current: Any = event
         splitted.forEach { currentPart ->
-            val currentPartValue = if(currentPart.startsWith('[') && currentPart.endsWith(']')) evaluate(event, currentPart.removePrefix("[").removeSuffix("]")).toString() else currentPart
             when (current) {
                 is List<*> -> {
-                    current = (current as List<*>)[currentPartValue.toIntOrNull() ?: error("Can't cast currentPartValue $currentPartValue to Int")] ?: error("Part $currentPartValue not found at $current")
+                    current = (current as List<*>)[currentPart.toIntOrNull()
+                        ?: error("Can't cast currentPart $currentPart to Int")]
+                        ?: error("Part $currentPart not found at $current")
                 }
+
                 is Map<*, *> -> {
-                    current = (current as Map<*, *>)[currentPartValue]   ?: error("Part $currentPartValue not found at $current")
+                    current = (current as Map<*, *>)[currentPart] ?: error("Part $currentPart not found at $current")
                 }
+
                 else -> {
-                    current = ((current::class as KClass<in Any>).memberProperties.firstOrNull { it.name == currentPartValue } ?: error("Mebmer $currentPartValue not found at $current"))
-                        .invoke(current) ?: error("Invoke $currentPartValue at $current returns null")
+                    current =
+                        ((current::class as KClass<in Any>).memberProperties.firstOrNull { it.name == currentPart }
+                            ?: error("Mebmer $currentPart not found at $current"))
+                            .invoke(current) ?: error("Invoke $currentPart at $current returns null")
                 }
             }
         }
