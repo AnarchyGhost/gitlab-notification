@@ -24,18 +24,19 @@ private fun process(text: String): String {
 
 object DataAccessEvaluator {
     fun evaluate(event: GitlabEvent<*>, value: String): Any {
-        val splitted = value.split(".", "[", "].")
+        val splitted = value.split(".")
         var current: Any = event
-        splitted.forEach { spCurrent ->
+        splitted.forEach { currentPart ->
+            val currentPartValue = if(currentPart.startsWith('[') && currentPart.endsWith(']')) evaluate(event, currentPart.removePrefix("[").removeSuffix("]")).toString() else currentPart
             when (current) {
                 is List<*> -> {
-                    current = (current as List<*>)[spCurrent.removeSuffix("]").toIntOrNull()!!]!!
+                    current = (current as List<*>)[currentPartValue.toIntOrNull()!!]!!
                 }
                 is Map<*, *> -> {
-                    current = (current as Map<*, *>)[spCurrent.removeSuffix("]")]!!
+                    current = (current as Map<*, *>)[currentPartValue]!!
                 }
                 else -> {
-                    current = (current::class as KClass<in Any>).memberProperties.first { it.name == spCurrent }
+                    current = (current::class as KClass<in Any>).memberProperties.first { it.name == currentPartValue }
                         .invoke(current)!!
                 }
             }
