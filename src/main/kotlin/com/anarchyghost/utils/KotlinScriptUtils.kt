@@ -30,7 +30,7 @@ object DataAccessEvaluator {
                 evaluate(event, it.groupValues[1]).toString()
             }
         }
-        val splitted = value.split(".")
+        val splitted = actualValue.split(".")
         var current: Any = event
         splitted.forEach { currentPart ->
             when (current) {
