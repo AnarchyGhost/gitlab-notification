@@ -33,12 +33,10 @@ class DefaultEventListener(
         if (type == ListenerType.PROJECT && event.projectId !in ids) return
         if (type == ListenerType.GROUP && event.groupId !in ids) return
         val evaluationResult = condition.evaluate(event)
-        println("Evaluation result $evaluationResult")
         if (!evaluationResult) return
         senders.forEach { senderAndGenerator ->
             try {
                 val generated = senderAndGenerator.generator.generate(event)
-                println("Send $generated")
                 senderAndGenerator.sender.send(generated)
             } catch (e: Exception) {
                 //TODO good message

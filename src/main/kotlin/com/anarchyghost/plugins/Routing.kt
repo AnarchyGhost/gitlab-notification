@@ -36,7 +36,6 @@ fun Application.configureRouting() {
     val eventProcessor = ConfigurationParser(httpClient).parse(ConfigurationReader().read())
     routing {
         post("/") {
-//            println(call.receiveText())
             val event: BaseEvent = when (call.request.headers["X-Gitlab-Event"]) {
                 "Push Hook" -> call.receive<PushEvent>()
                 "Tag Push Hook" -> call.receive<TagEvent>()

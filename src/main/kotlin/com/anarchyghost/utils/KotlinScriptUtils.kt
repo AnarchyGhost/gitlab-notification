@@ -11,7 +11,6 @@ fun evaluate(expression: String, params: Map<String, Any>): Any? {
     params.forEach { param ->
         engine.put(param.key, param.value)
     }
-    println("Evaluating $expression")
     return engine.eval(expression)
 }
 
@@ -24,19 +23,32 @@ private fun process(text: String): String {
 
 object DataAccessEvaluator {
     fun evaluate(event: GitlabEvent<*>, value: String): Any {
-        val splitted = value.split(".", "[", "].")
+        var actualValue = value
+        val processInnersPattern = Regex("\\[([^\\[\\]]+)]")
+        while (processInnersPattern.find(actualValue) != null) {
+            actualValue = processInnersPattern.replace(actualValue) {
+                evaluate(event, it.groupValues[1]).toString()
+            }
+        }
+        val splitted = actualValue.split(".")
         var current: Any = event
-        splitted.forEach { spCurrent ->
+        splitted.forEach { currentPart ->
             when (current) {
                 is List<*> -> {
-                    current = (current as List<*>)[spCurrent.removeSuffix("]").toIntOrNull()!!]!!
+                    current = (current as List<*>)[currentPart.toIntOrNull()
+                        ?: error("Can't cast currentPart $currentPart to Int")]
+                        ?: error("Part $currentPart not found at $current")
                 }
+
                 is Map<*, *> -> {
-                    current = (current as Map<*, *>)[spCurrent.removeSuffix("]")]!!
+                    current = (current as Map<*, *>)[currentPart] ?: error("Part $currentPart not found at $current")
                 }
+
                 else -> {
-                    current = (current::class as KClass<in Any>).memberProperties.first { it.name == spCurrent }
-                        .invoke(current)!!
+                    current =
+                        ((current::class as KClass<in Any>).memberProperties.firstOrNull { it.name == currentPart }
+                            ?: error("Mebmer $currentPart not found at $current"))
+                            .invoke(current) ?: error("Invoke $currentPart at $current returns null")
                 }
             }
         }

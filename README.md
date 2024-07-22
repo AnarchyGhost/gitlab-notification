@@ -115,20 +115,26 @@ Kotlin functions can use object "data" with fields:
 * addedLabels - added labels (set of string, for issue/merge request events)
 * deletedLabels - deleted labels (set of string, for issue/merge request events)
 * type - event type, enum EventType
+* usersMapping - list of users from configurations
+* labelsMapping - list of labels from configuration
+* usersById - map of users configuration by gitlab.id
+* usersByUsername - map of users configuration by gitlab.username
+* labelsByName - map of labels configuration by gitlab.name
 Functions:
-* getUserById(id: Long): UsersConfigurationJson
-* getUserByUsername(username: String): UsersConfigurationJson
-* getLabelByName(name: String): LabelsConfigurationJson
+* getUserById(id: Long): UsersConfigurationJson?
+* getUserByUsername(username: String): UsersConfigurationJson?
+* getLabelByName(name: String): LabelsConfigurationJson?
 * getLabelsByName(labels: Set<String>): List<LabelsConfigurationJson>
 
 Also can be used simple data access in kotlin functions, using `#{fields}`, that returns requested Object, so for string template you must use `${}` too.
+For inner data, you can use `[]`.
 Examples:
 
 `#{event.objectAttributes.url}`
 
 `#{event.labels.0.id}`
 
-`"text": "[${#{event.project.name}}/${#{event.objectAttributes.title}}](${#{event.objectAttributes.url}}) from ${data.getUserById(#{event.objectAttributes.authorId} as Long).additional[\"name\"]}"`
+`"text": "[${#{event.project.name}}/${#{event.objectAttributes.title}}](${#{event.objectAttributes.url}}) from ${#{usersById.[event.objectAttributes.authorId].additional.name}}"`
 
 To add custom condition evaluator, message generator, message sender:
 1. Implement interface from com.anarchyghost:gitlab-notification-core library
