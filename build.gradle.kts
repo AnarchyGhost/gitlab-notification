@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.anarchyghost"
-version = "0.0.5"
+version = "0.0.6"
 
 application {
     mainClass.set("com.anarchyghost.ApplicationKt")
@@ -37,7 +37,7 @@ repositories {
 ktor {
     docker {
         jreVersion.set(JavaVersion.VERSION_17)
-        imageTag.set("0.0.5")
+        imageTag.set("0.0.6")
         externalRegistry.set(
             io.ktor.plugin.features.DockerImageRegistry.dockerHub(
                 appName = provider { "gitlab-notification" },
